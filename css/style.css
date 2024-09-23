@@ -1,44 +1,89 @@
+/* Reset general */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
-    background-color: #333;
-    font-family: 'Arial', sans-serif;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-  
-  .intro-container {
-    text-align: center;
-    background-color: #444;
-    padding: 20px;
-    border-radius: 10px;
-  }
-  
-  .logo {
-    background-color: #ccc;
-    border-radius: 50%;
-    height: 70px;
-    width: 70px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto;
-  }
-  
-  .input-name label {
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  input[type="text"] {
-    padding: 10px;
-    border-radius: 20px;
-    border: none;
-    width: 200px;
-    background-color: #888;
-    color: white;
-    text-align: center;
-  }
-  
+  font-family: 'Poppins', sans-serif;
+  background-color: #2C2F33;
+  color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.intro-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #23272A;
+  padding: 50px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+}
+
+.logo {
+  margin-bottom: 30px;
+}
+
+.logo img {
+  width: 120px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.logo img:hover {
+  transform: scale(1.1); /* Efecto hover en el logo */
+}
+
+.input-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.input-name label {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.input-name input[type="text"] {
+  width: 300px;
+  padding: 10px;
+  border: 2px solid #7289DA; /* Borde azul claro */
+  border-radius: 25px;
+  font-size: 16px;
+  background-color: #40444B;
+  color: white;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.input-name input[type="text"]:focus {
+  border-color: #99AAB5; /* Borde más claro al enfocar */
+  background-color: #33373B; /* Fondo más oscuro al enfocar */
+}
+
+.input-name input[type="submit"] {
+  margin-top: 20px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 25px;
+  background-color: #7289DA;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.input-name input[type="submit"]:hover {
+  background-color: #99AAB5;
+  transform: translateY(-3px); /* Efecto al pasar el ratón por encima */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para botón levantado */
+}
