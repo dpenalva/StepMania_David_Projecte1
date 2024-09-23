@@ -1,18 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <div class="intro-container">
-        <div class="logo"> <img src="StepMania_Logo.png" alt=""></div>
-        <div class="input-name">
-          <label for="username">Introduce tu nombre</label>
-          <input type="text" id="username" name="username">
+        <div class="logo">
+          <img src="css/StepMania_Logo.png" alt="Logo del proyecto" class="logo">
         </div>
-      </div>
+        <div class="input-name">
+            <form action="index.html" method="GET" onsubmit="return guardarNombre()">
+                <label for="username">Introduce tu nombre</label>
+                <input type="text" id="username" name="username" required>
+                <input type="submit" value="Entrar">
+            </form>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
 </body>
 </html>
