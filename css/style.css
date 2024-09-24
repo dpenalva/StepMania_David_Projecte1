@@ -31,9 +31,10 @@ body {
 }
 
 .logo img {
-  width: 120px;
+  width: 220px;
   height: auto;
   cursor: pointer;
+  border-radius: 50%;
   transition: transform 0.3s ease;
 }
 
