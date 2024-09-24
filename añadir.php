@@ -8,7 +8,7 @@
 </head>
 <body>
   <!-- Logo fuera de la caja principal y con un enlace al inicio -->
-  <a href="index.html">
+  <a href="index.php">
     <div class="logo">
       <img src="css/StepMania_Logo.png" alt="Logo del proyecto">
     </div>
@@ -16,7 +16,7 @@
 
   <div class="add-song-container">
     <h1>Añadir Canción</h1>
-    <form action="subirCancion.php" method="POST" enctype="multipart/form-data">
+    <form action="php/subirCancion.php" method="POST" enctype="multipart/form-data">
       <div class="form-group">
         <label for="titulo">Título</label>
         <input type="text" id="titulo" name="titulo" required>
