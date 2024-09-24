@@ -101,44 +101,59 @@
     color: #7289DA;
   }
 
-  .song {
-    display: flex;
-    align-items: center;
-    background-color: #40444B;
-    padding: 10px;
-    margin-top: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
+  /* Estilo general */
+.song {
+  display: flex;
+  align-items: center;
+  background-color: #444;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  transition: background-color 0.3s ease;
+}
 
-  .song-cover {
-    width: 50px;
-    height: 50px;
-    background-color: black;
-    margin-right: 10px;
-    border-radius: 5px;
-  }
+.song:hover {
+  background-color: #555;
+}
 
-  .song-info {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    color: #FFF;
-  }
+.song-cover {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  margin-right: 15px;
+}
 
-  .song-options button {
-    background-color: transparent;
-    border: none;
-    color: #FFF;
-    font-size: 18px;
-    margin-left: 5px;
-    cursor: pointer;
-    transition: color 0.3s ease;
-  }
+.song-info {
+  flex-grow: 1;
+}
 
-  .song-options button:hover {
-    color: #99AAB5;
-  }
+.song-info p {
+  font-size: 16px;
+  color: #fff;
+}
+
+.song-options {
+  display: flex;
+}
+
+.song-options button {
+  background-color: transparent;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: color 0.3s ease;
+}
+
+.song-options button:hover {
+  color: #aaa;
+}
+
+.song-options button:focus {
+  outline: none;
+}
+
 
   a {
     text-decoration: none;

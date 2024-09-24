@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simulador de Baile - Menú Principal</title>
   <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 
@@ -43,12 +44,19 @@
         if (is_array($canciones) && count($canciones) > 0) {
             foreach ($canciones as $cancion) {
                 echo "<div class='song'>";
-                // Asegurarse de que la ruta de la imagen sea accesible
-                echo "<img src='{$cancion['ficheroCaratula']}' alt='Carátula de {$cancion['titulo']}' style='width: 50px; height: 50px; margin-right: 10px; border-radius: 5px;'>";
+                // Mostrar la imagen de la carátula
+                echo "<img src='{$cancion['ficheroCaratula']}' alt='Carátula de {$cancion['titulo']}' class='song-cover'>";
+                // Mostrar título y artista
+                echo "<div class='song-info'>";
                 echo "<p>{$cancion['titulo']} - {$cancion['artista']}</p>";
-                echo "<button>▶</button>";
-                echo "<button>✎</button>";
-                echo "<button>🗑</button>";
+                echo "</div>";
+
+                // Botones con Font Awesome
+                echo "<div class='song-options'>";
+                echo "<button><i class='fas fa-play'></i></button>"; // Reproducir
+                echo "<button><i class='fas fa-edit'></i></button>"; // Editar
+                echo "<button><i class='fas fa-trash-alt'></i></button>"; // Eliminar
+                echo "</div>";
                 echo "</div>";
             }
         } else {
