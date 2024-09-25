@@ -38,25 +38,36 @@
   <div id="song-list">
     <?php
     $jsonFile = 'php/canciones.json';
+
+    // Verificar si el archivo existe y contiene datos
     if (file_exists($jsonFile) && filesize($jsonFile) > 0) {
         $canciones = json_decode(file_get_contents($jsonFile), true);
 
+        // Ordenar las canciones alfabéticamente por título
+        usort($canciones, function($a, $b) {
+            return strcmp($a['titulo'], $b['titulo']);
+        });
+
+        // Mostrar las canciones
         if (is_array($canciones) && count($canciones) > 0) {
             foreach ($canciones as $cancion) {
                 echo "<div class='song'>";
-                // Mostrar la imagen de la carátula
+                
+                // Mostrar carátula
                 echo "<img src='{$cancion['ficheroCaratula']}' alt='Carátula de {$cancion['titulo']}' class='song-cover'>";
-                // Mostrar título y artista
+                
+                // Mostrar información de la canción
                 echo "<div class='song-info'>";
-                echo "<p>{$cancion['titulo']} - {$cancion['artista']}</p>";
+                echo "<p>{$cancion['titulo']} - {$cancion['artista']} ({$cancion['ficheroMusica']})</p>";
+                echo "</div>";
+                
+                // Opciones: Jugar, Personalizar, Eliminar
+                echo "<div class='song-options'>";
+                echo "<button onclick=\"location.href='{$cancion['ficheroMusica']}'\"><i class='fas fa-play'></i></button>"; // Reproducir
+                echo "<button onclick=\"location.href='php/editar.php?song={$cancion['titulo']}'\"><i class='fas fa-edit'></i></button>"; // Editar
+                echo "<button onclick=\"eliminarCancion('{$cancion['titulo']}')\"><i class='fas fa-trash-alt'></i></button>"; // Eliminar
                 echo "</div>";
 
-                // Botones con Font Awesome
-                echo "<div class='song-options'>";
-                echo "<button><i class='fas fa-play'></i></button>"; // Reproducir
-                echo "<button><i class='fas fa-edit'></i></button>"; // Editar
-                echo "<button><i class='fas fa-trash-alt'></i></button>"; // Eliminar
-                echo "</div>";
                 echo "</div>";
             }
         } else {
@@ -68,6 +79,16 @@
     ?>
   </div>
 </div>
+
+<script>
+// Función para eliminar una canción (puedes implementar la lógica en PHP para eliminar el archivo)
+function eliminarCancion(titulo) {
+    if (confirm('¿Estás seguro de que quieres eliminar ' + titulo + '?')) {
+        // Lógica para eliminar la canción (se puede implementar en PHP)
+        location.href = 'eliminar.php?titulo=' + titulo;
+    }
+}
+</script>
 
 
   <script src="js/index.js"></script>
