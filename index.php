@@ -28,7 +28,7 @@
 
     <div class="center-panel">
       <h1>Bienvenido, <span id="nombreUsuario"></span></h1>
-      <a href="jugar.php"><button class="main-button">PLAY</button></a>
+      <a href="index.php?play_random=true"><button class="main-button">PLAY</button></a>
       <a href="añadir.php"><button class="main-button">AÑADIR</button></a>
       <a href="como_jugar.php"><button class="main-button">CÓMO JUGAR?</button></a>
     </div>
@@ -80,6 +80,36 @@
   </div>
 </div>
 
+<?php
+// Función para seleccionar una canción aleatoria
+function getRandomSong($jsonFile) {
+    if (file_exists($jsonFile) && filesize($jsonFile) > 0) {
+        $canciones = json_decode(file_get_contents($jsonFile), true);
+        if (is_array($canciones) && count($canciones) > 0) {
+            $randomIndex = array_rand($canciones);
+            return $canciones[$randomIndex];
+        }
+    }
+    return null;
+}
+
+// Si se hace clic en el botón de "Play", seleccionar una canción aleatoria
+if (isset($_GET['play_random'])) {
+    $jsonFile = 'php/canciones.json';
+    $randomSong = getRandomSong($jsonFile);
+
+    if ($randomSong) {
+        // Redirigir a jugar.php con la canción seleccionada
+        header("Location: php/jugar.php?song=" . urlencode($randomSong['titulo']));
+        exit;
+    } else {
+        echo "<p>No hay canciones disponibles para jugar.</p>";
+    }
+}
+?>
+
+
+
 <script>
 // Función para eliminar una canción (puedes implementar la lógica en PHP para eliminar el archivo)
 function eliminarCancion(titulo) {
@@ -88,7 +118,6 @@ function eliminarCancion(titulo) {
         location.href = 'php/eliminar.php?titulo=' + encodeURIComponent(titulo);
     }
 }
-
 </script>
 
 
