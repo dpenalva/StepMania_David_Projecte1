@@ -125,15 +125,20 @@
 
 .song-info {
   flex-grow: 1;
+  white-space: nowrap;          /* Evitar que el texto haga salto de línea */
+  overflow: hidden;             /* Esconder el texto que desborda */
+  text-overflow: ellipsis;      /* Mostrar "..." cuando el texto es demasiado largo */
 }
 
 .song-info p {
   font-size: 16px;
   color: #fff;
+  margin: 0;
 }
 
 .song-options {
   display: flex;
+  align-items: center;          /* Asegurar que los íconos estén alineados verticalmente */
 }
 
 .song-options button {
@@ -153,7 +158,6 @@
 .song-options button:focus {
   outline: none;
 }
-
 
   a {
     text-decoration: none;
