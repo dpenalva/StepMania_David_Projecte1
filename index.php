@@ -84,10 +84,11 @@
 // Función para eliminar una canción (puedes implementar la lógica en PHP para eliminar el archivo)
 function eliminarCancion(titulo) {
     if (confirm('¿Estás seguro de que quieres eliminar ' + titulo + '?')) {
-        // Lógica para eliminar la canción (se puede implementar en PHP)
-        location.href = 'eliminar.php?titulo=' + titulo;
+        // Codificar el título para que se maneje correctamente en la URL
+        location.href = 'php/eliminar.php?titulo=' + encodeURIComponent(titulo);
     }
 }
+
 </script>
 
 

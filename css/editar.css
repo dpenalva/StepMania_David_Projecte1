@@ -1,0 +1,89 @@
+/* Estilo para la página de edición */
+body {
+    background-color: #222; /* Un tono más oscuro para mayor contraste */
+    color: #fff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Logo */
+.logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+}
+
+.logo img {
+    width: 50px;
+    height: auto;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* Estilo para centrar el formulario */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding-top: 50px; /* Añadir un margen superior para el logo */
+}
+
+.form-container {
+    background-color: #333;
+    padding: 40px;
+    border-radius: 10px;
+    width: 400px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Sombras para darle más profundidad */
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+/* Estilo para cada campo del formulario */
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input[type="text"], input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    background-color: #444;
+    color: #fff;
+}
+
+input[type="text"]:focus, input[type="file"]:focus {
+    outline: none;
+    background-color: #555;
+}
+
+.main-button {
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 8px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.main-button:hover {
+    background-color: #005f73;
+}
