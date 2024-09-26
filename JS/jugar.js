@@ -1,7 +1,6 @@
 let score = 0;
 let hits = 0;
 let misses = 0;
-let currentTime = 0;
 
 const songDuration = document.getElementById("duration");
 const scoreElement = document.getElementById("score");
@@ -12,6 +11,9 @@ const song = new Audio(cancionData.songUrl);
 const progressBar = document.getElementById('progress');
 const symbolsContainer = document.getElementById('symbols-container');
 let songLength = 0;
+
+const gameData = cancionData.gameData;
+const activeSymbols = [];
 
 // Evento que detecta cuando la metadata de la canción está cargada
 song.addEventListener('loadedmetadata', function() {
@@ -31,54 +33,77 @@ function updateProgressBar() {
     progressBar.style.width = progressPercentage + '%';
 }
 
-// Función para generar símbolos (flechas aleatorias)
-function generateSymbols() {
-    const symbols = ['⬆️', '⬇️', '⬅️', '➡️'];  // Flechas posibles
+// Función para mapear keyCode a event.key
+function getEventKeyFromKeyCode(keyCode) {
+    const keyCodeMap = {
+        37: 'ArrowLeft',
+        38: 'ArrowUp',
+        39: 'ArrowRight',
+        40: 'ArrowDown',
+        32: ' ', // Espacio
+        // Añadir más si es necesario
+    };
+
+    if (keyCodeMap[keyCode]) {
+        return keyCodeMap[keyCode];
+    } else {
+        // Para letras y números
+        return String.fromCharCode(keyCode);
+    }
+}
+
+// Función para generar símbolos según el gameData
+function generateSymbol(symbolData) {
     const symbol = document.createElement('div');
-    const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
     symbol.classList.add('symbol');
-    symbol.textContent = randomSymbol;
+
+    const keyCode = parseInt(symbolData.keyCode);
+    const expectedKey = getEventKeyFromKeyCode(keyCode);
+
+    // Mapear expectedKey a un símbolo para mostrar
+    const keyToDisplaySymbol = {
+        'ArrowLeft': '⬅️',
+        'ArrowUp': '⬆️',
+        'ArrowRight': '➡️',
+        'ArrowDown': '⬇️',
+        ' ': '⎵', // Espacio
+        // Para letras y números, mostrar el carácter
+    };
+
+    const displaySymbol = keyToDisplaySymbol[expectedKey] || expectedKey.toUpperCase();
+
+    symbol.textContent = displaySymbol;
     symbolsContainer.appendChild(symbol);
 
-    // Animar la caída de los símbolos
+    // Establecer estilos y animación
     symbol.style.top = '0%';
     symbol.style.left = '50%';
     symbol.style.transform = 'translateX(-50%)';
     symbol.style.position = 'absolute';
-    symbol.style.animation = 'fall 3s linear';
+    symbol.style.animation = `fall ${symbolData.timeDisappear - symbolData.timeAppear}s linear`;
 
-    // Escuchar la tecla correspondiente una sola vez por símbolo
-    function handleKeyPress(event) {
-        let pressedKey = null;
-
-        // Asociar las teclas con los símbolos
-        switch (event.key) {
-            case 'ArrowUp': pressedKey = '⬆️'; break;
-            case 'ArrowDown': pressedKey = '⬇️'; break;
-            case 'ArrowLeft': pressedKey = '⬅️'; break;
-            case 'ArrowRight': pressedKey = '➡️'; break;
-        }
-
-        // Si la tecla es correcta
-        if (pressedKey === randomSymbol) {
-            hits++;
-            score += 100;
-            symbol.remove();  // Eliminar símbolo acertado
-            document.removeEventListener('keydown', handleKeyPress);  // Eliminar el evento de esta flecha
-            updateScore();  // Actualizar la puntuación
-        }
-    }
-
-    document.addEventListener('keydown', handleKeyPress);
-
-    // Eliminar el símbolo si no es presionado a tiempo
-    symbol.addEventListener('animationend', function() {
-        symbol.remove();
-        misses++;
-        score -= 50;
-        document.removeEventListener('keydown', handleKeyPress);  // Eliminar el evento de esta flecha
-        updateScore();
+    // Añadir símbolo al array de símbolos activos
+    activeSymbols.push({
+        element: symbol,
+        expectedKey: expectedKey,
+        removeTime: symbolData.timeDisappear
     });
+
+    // Remover el símbolo después del tiempo de desaparición
+    setTimeout(() => {
+        // Verificar si el símbolo aún está en activeSymbols
+        const index = activeSymbols.findIndex(s => s.element === symbol);
+        if (index !== -1) {
+            // El jugador no presionó la tecla a tiempo
+            misses++;
+            score -= 50;
+            updateScore();
+
+            // Remover símbolo del DOM y del array
+            symbol.remove();
+            activeSymbols.splice(index, 1);
+        }
+    }, (symbolData.timeDisappear - symbolData.timeAppear) * 1000);
 }
 
 // Función para actualizar la puntuación
@@ -92,19 +117,46 @@ function updateScore() {
 song.addEventListener('canplaythrough', function() {
     song.play();
 
+    // Programar los símbolos según el gameData
+    gameData.forEach(symbolData => {
+        const timeToAppear = symbolData.timeAppear * 1000; // en milisegundos
+        setTimeout(() => {
+            generateSymbol(symbolData);
+        }, timeToAppear);
+    });
+
+    // Actualizar la barra de progreso y controlar el tiempo
     const gameInterval = setInterval(() => {
-        currentTime += 1;
         updateProgressBar();
 
-        // Generar símbolos periódicamente (cada 2 segundos)
-        if (currentTime % 2 === 0) {
-            generateSymbols();
-        }
-
         // Terminar el juego cuando la canción termine
-        if (currentTime >= songLength) {
+        if (song.currentTime >= songLength) {
             clearInterval(gameInterval);
             alert('Juego terminado. Puntuación: ' + score);
         }
-    }, 1000);
+    }, 100);
+});
+
+// Escuchar eventos de teclado
+document.addEventListener('keydown', function(event) {
+    const pressedKey = event.key;
+
+    for (let i = 0; i < activeSymbols.length; i++) {
+        const symbolObj = activeSymbols[i];
+        if (symbolObj.expectedKey.toLowerCase() === pressedKey.toLowerCase()) {
+            // Tecla correcta presionada
+            hits++;
+            score += 100;
+            updateScore();
+
+            // Remover símbolo del DOM
+            symbolObj.element.remove();
+
+            // Remover símbolo del array de símbolos activos
+            activeSymbols.splice(i, 1);
+
+            // No es necesario seguir buscando
+            break;
+        }
+    }
 });

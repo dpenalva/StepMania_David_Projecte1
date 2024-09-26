@@ -39,10 +39,49 @@ $cancionData = [
     'titulo' => $cancion['titulo'],
     'artista' => $cancion['artista']
 ];
+
+// Leer y parsear el fichero de juego
+function parseGameData($content) {
+    $lines = explode("\n", trim($content));
+    $numElements = (int)trim($lines[0]);
+    $gameData = [];
+    for ($i = 1; $i <= $numElements; $i++) {
+        if (!isset($lines[$i])) {
+            // Error handling
+            continue;
+        }
+        $parts = explode("#", $lines[$i]);
+        if (count($parts) !== 3) {
+            // Error handling
+            continue;
+        }
+        $keyCode = trim($parts[0]);
+        $timeAppear = floatval(trim($parts[1]));
+        $timeDisappear = floatval(trim($parts[2]));
+        $gameData[] = [
+            'keyCode' => $keyCode,
+            'timeAppear' => $timeAppear,
+            'timeDisappear' => $timeDisappear
+        ];
+    }
+    return $gameData;
+}
+
+// Ruta al fichero de juego
+$gameDataFile = __DIR__ . '/../' . $cancion['ficheroJuego'];
+if (file_exists($gameDataFile)) {
+    $gameDataContent = file_get_contents($gameDataFile);
+    $gameData = parseGameData($gameDataContent);
+    $cancionData['gameData'] = $gameData;
+} else {
+    echo "<p>Error: No se encontró el archivo de datos del juego.</p>";
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Meta y enlaces -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jugar Canción</title>
