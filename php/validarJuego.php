@@ -17,13 +17,13 @@ function validarJuego($juegoContenido) {
 
         $partes = explode("#", $juegoLineas[$i]);
         if (count($partes) !== 3) {
-            return "Error: Cada línea debe tener el formato 'tecla # instante_aparicion # instante_desaparicion'.";
+            return "Error: Cada línea debe tener el formato 'codigo # instante_aparicion # instante_desaparicion'.";
         }
 
-        // Validar la tecla (Unicode y minúscula)
-        $tecla = trim($partes[0]);
-        if (!ctype_lower($tecla) || !ctype_print($tecla)) {
-            return "Error: La tecla debe estar en formato Unicode y ser una letra minúscula.";
+        // Validar el código de tecla (número entero)
+        $codigoTecla = trim($partes[0]);
+        if (!ctype_digit($codigoTecla)) {
+            return "Error: El código de tecla debe ser un número entero.";
         }
 
         // Validar los instantes (números positivos)

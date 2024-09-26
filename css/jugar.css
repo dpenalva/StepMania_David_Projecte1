@@ -1,41 +1,59 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #333;
-    color: white;
+    background-color: #2C2F33; /* Fondo oscuro acorde con la estética */
+    color: #fff; /* Texto blanco */
+    font-family: 'Arial', sans-serif;
 }
 
 .game-container {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    width: 80%;
+    width: 85%; /* Más margen para dar espacio a los elementos */
     margin: 0 auto;
-    padding-top: 100px;
+    padding-top: 100px; /* Aumentar espacio desde la parte superior */
 }
 
 .song-info, .score-info {
-    width: 20%;
+    width: 22%; /* Reducir un poco el tamaño de los paneles laterales */
     padding: 20px;
-    background-color: #444;
+    background-color: #4f4f4f; /* Fondo acorde con la estética oscura */
     border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Sombra sutil para elevar */
+}
+
+.song-info h2, .score-info h2 {
+    color: #7aa6f8; /* Color de títulos acorde con los botones */
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+.song-info p, .score-info p {
+    font-size: 16px;
+    margin: 5px 0;
 }
 
 .song-cover {
     width: 100%;
     height: auto;
-    margin-top: 10px;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Sombra en la carátula */
 }
 
 .game-area {
     position: relative;
-    width: 60%;
+    width: 52%; /* Ajustar el tamaño para más equilibrio */
     height: 500px;
-    background-color: #222;
+    background-color: #2b2b3d;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    margin: 0 20px; /* Separación de las columnas laterales */
 }
 
 .symbols-container {
@@ -46,35 +64,46 @@ body {
 }
 
 .symbol {
-    font-size: 40px;
-    color: white;
+    font-size: 48px; /* Aumentado para mayor visibilidad */
+    color: #7aa6f8; /* Color acorde con el tema */
     position: absolute;
+    transition: 0.3s ease-in-out;
+    text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5); /* Sombra sutil */
 }
 
 @keyframes fall {
     from {
-        top: 0%;
+        top: -50px; /* Caída desde fuera de la pantalla */
     }
     to {
-        top: 100%;
+        top: 480px; /* Llega hasta la parte inferior */
     }
-}
-
-.symbol {
-    animation: fall 3s linear;
 }
 
 .progress-bar {
     width: 80%;
-    height: 10px;
-    background-color: #555;
-    border-radius: 5px;
-    margin: 20px 0;
+    height: 15px; /* Mayor altura para mayor visibilidad */
+    background-color: #3d3d50;
+    border-radius: 8px;
+    margin-top: 30px;
 }
 
 .progress {
     width: 0;
     height: 100%;
-    background-color: green;
-    border-radius: 5px;
+    background-color: #28a745; /* Verde para el progreso */
+    border-radius: 8px;
+}
+
+.logo img {
+    width: 60px; /* Tamaño reducido */
+    height: auto;
+    position: fixed; /* Fijo para que no interfiera con la información */
+    top: 20px;
+    left: 20px;
+    cursor: pointer;
+}
+
+.score-info h2, .score-info p {
+    text-align: center;
 }

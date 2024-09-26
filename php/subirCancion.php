@@ -64,14 +64,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Validar el archivo de juego subido
         $juegoContenido = file_get_contents($juegoPath);
-        $error = validarJuego($juegoContenido);
+        $error = validarJuego($juegoContenido); // Validar con el nuevo formato
         if ($error) {
             echo $error;
             exit;
         }
     } elseif (!empty($juegoTextarea)) {
         // Validar el contenido manual del textarea
-        $error = validarJuego($juegoTextarea);
+        $error = validarJuego($juegoTextarea); // Validar con el nuevo formato
         if ($error) {
             echo $error;
             exit;
