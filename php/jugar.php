@@ -1,19 +1,78 @@
+<?php
+// Verificar que se recibe el parámetro 'song' en la URL
+$cancion = null; // Inicializar la variable $cancion como null
+if (isset($_GET['song'])) {
+    $songTitle = $_GET['song'];
+
+    // Cargar la lista de canciones desde el archivo JSON
+    $jsonFile = __DIR__ . '/canciones.json';
+
+    if (file_exists($jsonFile)) {
+        $canciones = json_decode(file_get_contents($jsonFile), true);
+
+        // Buscar la canción correspondiente al título proporcionado
+        foreach ($canciones as $c) {
+            if ($c['titulo'] == $songTitle) {
+                $cancion = $c;
+                break;
+            }
+        }
+
+        // Verificar si se encontró la canción
+        if (!$cancion) {
+            echo "<p>Error: No se encontró la canción solicitada.</p>";
+            exit;
+        }
+    } else {
+        echo "<p>Error: No se encontró el archivo JSON.</p>";
+        exit;
+    }
+} else {
+    echo "<p>Error: No se proporcionó una canción para jugar.</p>";
+    exit;
+}
+
+// Añadir cancionData para pasar al JavaScript
+$cancionData = [
+    'songUrl' => '../' . $cancion['ficheroMusica'],
+    'coverUrl' => '../' . $cancion['ficheroCaratula'],
+    'titulo' => $cancion['titulo'],
+    'artista' => $cancion['artista']
+];
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jugar Canción</title>
-    <link rel="stylesheet" href="css/jugar.css"> <!-- Archivo CSS para el juego -->
+    <link rel="stylesheet" href="../css/jugar.css">
+    <style>
+        /* Estilos para el logo */
+        .logo img {
+            width: 100px;
+            height: auto;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+    </style>
 </head>
 <body>
+    <!-- Logo con enlace a index.php -->
+    <div class="logo">
+        <a href="../index.php">
+            <img src="../css/StepMania_Logo.png" alt="Logo del proyecto">
+        </a>
+    </div>
+
     <div class="game-container">
         <!-- Información de la canción -->
         <div class="song-info">
-            <h2>Canción: <?php echo htmlspecialchars($cancion['titulo']); ?></h2>
-            <p>Artista: <?php echo htmlspecialchars($cancion['artista']); ?></p>
-            <p>Duración: <span id="duration"></span></p>
-            <img src="<?php echo htmlspecialchars($cancion['ficheroCaratula']); ?>" alt="Carátula de la canción" class="song-cover">
+            <h2>Canción: <?php echo htmlspecialchars($cancionData['titulo']); ?></h2>
+            <p>Artista: <?php echo htmlspecialchars($cancionData['artista']); ?></p>
+            <p>Duración: <span id="duration">Cargando...</span></p>
+            <img src="<?php echo htmlspecialchars($cancionData['coverUrl']); ?>" alt="Carátula de la canción" class="song-cover">
         </div>
 
         <!-- Área del juego -->
@@ -34,31 +93,10 @@
         </div>
     </div>
 
-    <?php
-// Verificar que la canción se pasa como parámetro
-if (isset($_GET['song'])) {
-    $songTitle = $_GET['song'];
-
-    // Cargar la canción desde el archivo JSON
-    $jsonFile = 'canciones.json';
-    if (file_exists($jsonFile)) {
-        $canciones = json_decode(file_get_contents($jsonFile), true);
-        foreach ($canciones as $cancion) {
-            if ($cancion['titulo'] == $songTitle) {
-                // Aquí puedes procesar la canción seleccionada
-                echo "<h1>Jugando: " . htmlspecialchars($cancion['titulo']) . "</h1>";
-                break;
-            }
-        }
-    } else {
-        echo "<p>No se encontró el archivo de canciones.</p>";
-    }
-} else {
-    echo "<p>No se seleccionó ninguna canción.</p>";
-}
-?>
-
-
-    <script src="js/jugar.js"></script> <!-- Archivo JavaScript para la lógica del juego -->
+    <!-- Pasamos cancionData a JavaScript -->
+    <script>
+        const cancionData = <?php echo json_encode($cancionData); ?>;
+    </script>
+    <script src="../js/jugar.js"></script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 <?php
 // Incluir el archivo para validar el archivo de juego
 require_once('validarJuego.php');
+require_once('getid3-MASTER/getid3/getid3.php'); // Asegúrate de que la ruta es correcta
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $titulo = $_POST['titulo'];
@@ -31,6 +32,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $musicaPath = $uploadDir . basename($ficheroMusica['name']);
     move_uploaded_file($ficheroMusica['tmp_name'], $musicaPath);
+
+    // Obtener la duración del archivo de música
+    $getID3 = new getID3;
+    $fileInfo = $getID3->analyze($musicaPath);
+
+    // Convertir la duración de segundos a formato minutos:segundos
+    $duracionSegundos = (float)$fileInfo['playtime_seconds']; // Duración en segundos
+    $minutos = floor($duracionSegundos / 60);
+    $segundos = floor($duracionSegundos % 60);
+
+    // Formatear para que siempre aparezcan 2 dígitos en los segundos (ejemplo: 01:05)
+    $duracionFormateada = sprintf('%02d:%02d', $minutos, $segundos);
 
     // Subir archivo de carátula
     $ficheroCaratula = $_FILES['ficheroCaratula'];
@@ -87,10 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         'ficheroMusica' => 'uploads/' . basename($ficheroMusica['name']),
         'ficheroCaratula' => 'uploads/' . basename($ficheroCaratula['name']),
         'ficheroJuego' => 'uploads/' . basename($juegoPath),
+        'duracion' => $duracionFormateada, // Guardar la duración formateada
     ];
 
     $jsonData[] = $nuevaCancion;
-    file_put_contents($jsonFile, json_encode($jsonData));
+    file_put_contents($jsonFile, json_encode($jsonData, JSON_PRETTY_PRINT));
 
     // Redirigir a la página principal
     header('Location: ../index.php');
