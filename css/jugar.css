@@ -96,11 +96,12 @@ body {
 }
 
 .logo img {
-    width: 60px; /* Tamaño reducido */
+    width: 40px; /* Tamaño reducido */
     height: auto;
     position: fixed; /* Fijo para que no interfiera con la información */
     top: 20px;
     left: 20px;
+    border-radius: 50%;
     cursor: pointer;
 }
 

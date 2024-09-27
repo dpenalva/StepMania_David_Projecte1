@@ -140,6 +140,7 @@ song.addEventListener('canplaythrough', function() {
 // Escuchar eventos de teclado
 document.addEventListener('keydown', function(event) {
     const pressedKey = event.key;
+    let symbolHit = false; // Flag para controlar si la tecla fue acertada
 
     for (let i = 0; i < activeSymbols.length; i++) {
         const symbolObj = activeSymbols[i];
@@ -155,8 +156,18 @@ document.addEventListener('keydown', function(event) {
             // Remover símbolo del array de símbolos activos
             activeSymbols.splice(i, 1);
 
+            // Marca que se ha acertado una tecla
+            symbolHit = true;
+
             // No es necesario seguir buscando
             break;
         }
+    }
+
+    // Si no se acertó ninguna tecla, contar como error
+    if (!symbolHit) {
+        misses++;
+        score -= 50;
+        updateScore();
     }
 });
