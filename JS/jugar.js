@@ -113,6 +113,33 @@ function updateScore() {
     missesElement.textContent = misses;
 }
 
+// Guardar la puntuación en la clasificación
+function guardarPuntuacion() {
+    const nombreUsuario = localStorage.getItem('nombreUsuario') || 'Invitado';  // Obtener el nombre del localStorage
+    const data = {
+        jugador: nombreUsuario,
+        cancion: cancionData.titulo,
+        puntuacion: score,
+        fecha: new Date().toLocaleString()
+    };
+
+    fetch('../php/guardar_puntuacion.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            alert('Puntuación guardada correctamente');
+        } else {
+            alert('Error al guardar la puntuación');
+        }
+    });
+}
+
 // Iniciar el juego una vez que la canción esté lista para reproducirse
 song.addEventListener('canplaythrough', function() {
     song.play();
@@ -133,6 +160,7 @@ song.addEventListener('canplaythrough', function() {
         if (song.currentTime >= songLength) {
             clearInterval(gameInterval);
             alert('Juego terminado. Puntuación: ' + score);
+            guardarPuntuacion(); // Guardar la puntuación al terminar
         }
     }, 100);
 });

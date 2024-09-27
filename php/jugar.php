@@ -1,4 +1,6 @@
 <?php
+session_start(); // Iniciar sesión
+
 // Verificar que se recibe el parámetro 'song' en la URL
 $cancion = null; // Inicializar la variable $cancion como null
 if (isset($_GET['song'])) {

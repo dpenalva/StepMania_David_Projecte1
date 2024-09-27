@@ -22,7 +22,30 @@
       <div class="classification">
         <h2>Tabla de Clasificación</h2>
         <div class="classification-list">
-          <!-- Aquí irán las entradas de la tabla de clasificación -->
+          <?php
+          // Cargar la clasificación del archivo JSON
+          $archivoClasificacion = 'php/clasificacion.json';
+          if (file_exists($archivoClasificacion) && filesize($archivoClasificacion) > 0) {
+              $clasificacion = json_decode(file_get_contents($archivoClasificacion), true);
+              
+              // Ordenar la clasificación por puntuación de mayor a menor
+              usort($clasificacion, function($a, $b) {
+                  return $b['puntuacion'] - $a['puntuacion'];
+              });
+
+              if (!empty($clasificacion)) {
+                  foreach ($clasificacion as $entrada) {
+                      echo "<div class='entry'>";
+                      echo "<p><strong>{$entrada['jugador']}</strong> - {$entrada['cancion']} - {$entrada['puntuacion']} pts</p>";
+                      echo "</div>";
+                  }
+              } else {
+                  echo "<p>No hay puntuaciones registradas.</p>";
+              }
+          } else {
+              echo "<p>No hay puntuaciones registradas.</p>";
+          }
+          ?>
         </div>
       </div>
     </div>
@@ -53,15 +76,15 @@
             if (is_array($canciones) && count($canciones) > 0) {
                 foreach ($canciones as $cancion) {
                     echo "<div class='song'>";
-                    
+
                     // Mostrar carátula
                     echo "<img src='{$cancion['ficheroCaratula']}' alt='Carátula de {$cancion['titulo']}' class='song-cover'>";
-                    
+
                     // Mostrar información de la canción
                     echo "<div class='song-info'>";
                     echo "<p>{$cancion['titulo']} - {$cancion['artista']}</p>";
                     echo "</div>";
-                    
+
                     // Opciones: Jugar, Editar, Eliminar
                     echo "<div class='song-options'>";
                     // Modificado el botón de reproducir para que inicie el juego con la canción seleccionada
@@ -118,6 +141,16 @@
             location.href = 'php/eliminar.php?titulo=' + encodeURIComponent(titulo);
         }
     }
+
+    // Cargar el nombre de usuario guardado
+    document.addEventListener("DOMContentLoaded", function() {
+        const nombreUsuario = localStorage.getItem('nombreUsuario');
+        if (nombreUsuario) {
+            document.getElementById('nombreUsuario').textContent = nombreUsuario;
+        } else {
+            document.getElementById('nombreUsuario').textContent = 'Invitado';
+        }
+    });
     </script>
 
     <script src="js/index.js"></script>
