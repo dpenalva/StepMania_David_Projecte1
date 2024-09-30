@@ -35,8 +35,14 @@
 
               if (!empty($clasificacion)) {
                   foreach ($clasificacion as $entrada) {
-                      echo "<div class='entry'>";
-                      echo "<p><strong>{$entrada['jugador']}</strong> - {$entrada['cancion']} - {$entrada['puntuacion']} pts</p>";
+                      echo "<div class='classification-item'>";
+                      echo "<div>";
+                      echo "<h4>" . htmlspecialchars($entrada['jugador']) . "</h4>";
+                      echo "<p>" . htmlspecialchars($entrada['cancion']) . "</p>";
+                      echo "</div>";
+                      echo "<div class='classification-points'>";
+                      echo htmlspecialchars($entrada['puntuacion']) . " pts";
+                      echo "</div>";
                       echo "</div>";
                   }
               } else {
