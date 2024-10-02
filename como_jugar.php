@@ -6,6 +6,8 @@
     <title>Como Jugar</title>
 </head>
 <body>
-    
+    <nav>
+        <h1>COMO JUGAR</h1>
+    </nav>
 </body>
 </html>
