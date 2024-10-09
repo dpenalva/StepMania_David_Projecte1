@@ -1,11 +1,17 @@
 let score = 0;
 let hits = 0;
 let misses = 0;
+let isPaused = false; // Estado de pausa
+let gameInterval;
+let timeIntervals = []; // Arreglo para guardar los timeouts
+const scheduledSymbols = []; // Para evitar duplicar símbolos
+let songStarted = false;
 
 const songDuration = document.getElementById("duration");
 const scoreElement = document.getElementById("score");
 const hitsElement = document.getElementById("hits");
 const missesElement = document.getElementById("misses");
+const pauseButton = document.getElementById("pause-button");
 
 const song = new Audio(cancionData.songUrl);
 const progressBar = document.getElementById('progress');
@@ -29,8 +35,10 @@ song.addEventListener('error', function(e) {
 
 // Función para actualizar la barra de progreso
 function updateProgressBar() {
-    const progressPercentage = (song.currentTime / songLength) * 100;
-    progressBar.style.width = progressPercentage + '%';
+    if (!isPaused) {
+        const progressPercentage = (song.currentTime / songLength) * 100;
+        progressBar.style.width = progressPercentage + '%';
+    }
 }
 
 // Función para mapear keyCode a event.key
@@ -41,33 +49,31 @@ function getEventKeyFromKeyCode(keyCode) {
         39: 'ArrowRight',
         40: 'ArrowDown',
         32: ' ', // Espacio
-        // Añadir más si es necesario
     };
 
-    if (keyCodeMap[keyCode]) {
-        return keyCodeMap[keyCode];
-    } else {
-        // Para letras y números
-        return String.fromCharCode(keyCode);
-    }
+    return keyCodeMap[keyCode] || String.fromCharCode(keyCode);
 }
 
 // Función para generar símbolos según el gameData
 function generateSymbol(symbolData) {
+    // Evitar duplicar símbolos
+    if (scheduledSymbols.includes(symbolData)) {
+        return;
+    }
+    scheduledSymbols.push(symbolData);
+
     const symbol = document.createElement('div');
     symbol.classList.add('symbol');
 
     const keyCode = parseInt(symbolData.keyCode);
     const expectedKey = getEventKeyFromKeyCode(keyCode);
 
-    // Mapear expectedKey a un símbolo para mostrar
     const keyToDisplaySymbol = {
         'ArrowLeft': '⬅️',
         'ArrowUp': '⬆️',
         'ArrowRight': '➡️',
         'ArrowDown': '⬇️',
         ' ': '⎵', // Espacio
-        // Para letras y números, mostrar el carácter
     };
 
     const displaySymbol = keyToDisplaySymbol[expectedKey] || expectedKey.toUpperCase();
@@ -75,35 +81,35 @@ function generateSymbol(symbolData) {
     symbol.textContent = displaySymbol;
     symbolsContainer.appendChild(symbol);
 
-    // Establecer estilos y animación
     symbol.style.top = '0%';
     symbol.style.left = '50%';
     symbol.style.transform = 'translateX(-50%)';
     symbol.style.position = 'absolute';
-    symbol.style.animation = `fall ${symbolData.timeDisappear - symbolData.timeAppear}s linear`;
 
-    // Añadir símbolo al array de símbolos activos
+    const animationDuration = (symbolData.timeDisappear - symbolData.timeAppear) * 1000;
+    symbol.style.animation = `fall ${animationDuration / 1000}s linear`;
+
     activeSymbols.push({
         element: symbol,
         expectedKey: expectedKey,
-        removeTime: symbolData.timeDisappear
+        removeTime: symbolData.timeDisappear,
+        animationDuration: animationDuration,
     });
 
-    // Remover el símbolo después del tiempo de desaparición
-    setTimeout(() => {
-        // Verificar si el símbolo aún está en activeSymbols
+    const removeTimeout = setTimeout(() => {
         const index = activeSymbols.findIndex(s => s.element === symbol);
-        if (index !== -1) {
-            // El jugador no presionó la tecla a tiempo
+        if (index !== -1 && !isPaused) {
             misses++;
             score -= 50;
             updateScore();
 
-            // Remover símbolo del DOM y del array
             symbol.remove();
             activeSymbols.splice(index, 1);
         }
-    }, (symbolData.timeDisappear - symbolData.timeAppear) * 1000);
+    }, animationDuration);
+
+    // Guardar el timeoutId para poder pausarlo
+    symbol.removeTimeoutId = removeTimeout;
 }
 
 // Función para actualizar la puntuación
@@ -140,62 +146,111 @@ function guardarPuntuacion() {
     });
 }
 
-// Iniciar el juego una vez que la canción esté lista para reproducirse
-song.addEventListener('canplaythrough', function() {
-    song.play();
+function gameLoop() {
+    if (isPaused) return;
 
-    // Programar los símbolos según el gameData
+    const currentTime = song.currentTime;
+
+    // Generar símbolos que deben aparecer en este momento
     gameData.forEach(symbolData => {
-        const timeToAppear = symbolData.timeAppear * 1000; // en milisegundos
-        setTimeout(() => {
+        if (!symbolData.generated && symbolData.timeAppear <= currentTime) {
             generateSymbol(symbolData);
-        }, timeToAppear);
+            symbolData.generated = true;
+        }
     });
 
-    // Actualizar la barra de progreso y controlar el tiempo
-    const gameInterval = setInterval(() => {
-        updateProgressBar();
+    updateProgressBar();
 
-        // Terminar el juego cuando la canción termine
-        if (song.currentTime >= songLength) {
-            clearInterval(gameInterval);
-            alert('Juego terminado. Puntuación: ' + score);
-            guardarPuntuacion(); // Guardar la puntuación al terminar
-        }
-    }, 100);
-});
+    if (currentTime >= songLength) {
+        clearInterval(gameInterval);
+        alert('Juego terminado. Puntuación: ' + score);
+        guardarPuntuacion();
+    }
+}
+
+function startGame() {
+    if (songStarted) return;
+    songStarted = true;
+
+    song.play();
+
+    gameInterval = setInterval(gameLoop, 50);
+}
+
+// Iniciar el juego
+if (song.readyState >= 3) { // HAVE_FUTURE_DATA
+    startGame();
+} else {
+    song.addEventListener('canplaythrough', startGame);
+}
 
 // Escuchar eventos de teclado
 document.addEventListener('keydown', function(event) {
+    if (isPaused) return;
+
     const pressedKey = event.key;
-    let symbolHit = false; // Flag para controlar si la tecla fue acertada
+    let symbolHit = false;
 
     for (let i = 0; i < activeSymbols.length; i++) {
         const symbolObj = activeSymbols[i];
         if (symbolObj.expectedKey.toLowerCase() === pressedKey.toLowerCase()) {
-            // Tecla correcta presionada
             hits++;
             score += 100;
             updateScore();
 
-            // Remover símbolo del DOM
             symbolObj.element.remove();
-
-            // Remover símbolo del array de símbolos activos
             activeSymbols.splice(i, 1);
 
-            // Marca que se ha acertado una tecla
             symbolHit = true;
-
-            // No es necesario seguir buscando
             break;
         }
     }
 
-    // Si no se acertó ninguna tecla, contar como error
     if (!symbolHit) {
         misses++;
         score -= 50;
         updateScore();
+    }
+});
+
+// Manejar el botón de pausa
+pauseButton.addEventListener('click', function() {
+    if (!isPaused) {
+        song.pause();
+        isPaused = true;
+        pauseButton.textContent = 'Reanudar';
+
+        // Pausar todas las animaciones
+        activeSymbols.forEach(symbolObj => {
+            const computedStyle = window.getComputedStyle(symbolObj.element);
+            const topValue = computedStyle.getPropertyValue('top');
+            symbolObj.element.style.top = topValue;
+            symbolObj.element.style.animation = 'none';
+            clearTimeout(symbolObj.removeTimeoutId);
+            // Calcular el tiempo restante
+            symbolObj.remainingTime = (symbolObj.removeTime - song.currentTime) * 1000;
+        });
+
+    } else {
+        song.play();
+        isPaused = false;
+        pauseButton.textContent = 'Pausa';
+
+        // Reanudar las animaciones
+        activeSymbols.forEach(symbolObj => {
+            symbolObj.element.style.animation = `fall ${symbolObj.remainingTime / 1000}s linear`;
+            // Reiniciar el timeout para eliminar el símbolo
+            symbolObj.removeTimeoutId = setTimeout(() => {
+                const index = activeSymbols.findIndex(s => s.element === symbolObj.element);
+                if (index !== -1 && !isPaused) {
+                    misses++;
+                    score -= 50;
+                    updateScore();
+
+                    symbolObj.element.remove();
+                    activeSymbols.splice(index, 1);
+                }
+            }, symbolObj.remainingTime);
+        });
     }
 });

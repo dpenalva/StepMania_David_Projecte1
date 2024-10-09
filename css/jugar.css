@@ -1,8 +1,8 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #2C2F33; /* Fondo oscuro acorde con la estética */
-    color: #fff; /* Texto blanco */
+    background-color: #2C2F33;
+    color: #fff;
     font-family: 'Arial', sans-serif;
 }
 
@@ -10,21 +10,21 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    width: 85%; /* Más margen para dar espacio a los elementos */
+    width: 85%;
     margin: 0 auto;
-    padding-top: 100px; /* Aumentar espacio desde la parte superior */
+    padding-top: 100px;
 }
 
 .song-info, .score-info {
-    width: 22%; /* Reducir un poco el tamaño de los paneles laterales */
+    width: 22%;
     padding: 20px;
-    background-color: #4f4f4f; /* Fondo acorde con la estética oscura */
+    background-color: #4f4f4f;
     border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Sombra sutil para elevar */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .song-info h2, .score-info h2 {
-    color: #7aa6f8; /* Color de títulos acorde con los botones */
+    color: #7aa6f8;
     font-size: 22px;
     margin-bottom: 10px;
 }
@@ -39,12 +39,12 @@ body {
     height: auto;
     margin-top: 20px;
     border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5); /* Sombra en la carátula */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
 .game-area {
     position: relative;
-    width: 52%; /* Ajustar el tamaño para más equilibrio */
+    width: 52%;
     height: 500px;
     background-color: #2b2b3d;
     border-radius: 10px;
@@ -53,7 +53,7 @@ body {
     align-items: center;
     padding: 20px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
-    margin: 0 20px; /* Separación de las columnas laterales */
+    margin: 0 20px;
 }
 
 .symbols-container {
@@ -64,25 +64,25 @@ body {
 }
 
 .symbol {
-    font-size: 48px; /* Aumentado para mayor visibilidad */
-    color: #7aa6f8; /* Color acorde con el tema */
+    font-size: 48px;
+    color: #7aa6f8;
     position: absolute;
     transition: 0.3s ease-in-out;
-    text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5); /* Sombra sutil */
+    text-shadow: 0px 4px 6px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes fall {
     from {
-        top: -50px; /* Caída desde fuera de la pantalla */
+        top: -50px;
     }
     to {
-        top: 480px; /* Llega hasta la parte inferior */
+        top: 480px;
     }
 }
 
 .progress-bar {
     width: 80%;
-    height: 15px; /* Mayor altura para mayor visibilidad */
+    height: 15px;
     background-color: #3d3d50;
     border-radius: 8px;
     margin-top: 30px;
@@ -91,14 +91,14 @@ body {
 .progress {
     width: 0;
     height: 100%;
-    background-color: #28a745; /* Verde para el progreso */
+    background-color: #28a745;
     border-radius: 8px;
 }
 
 .logo img {
-    width: 40px; /* Tamaño reducido */
+    width: 40px;
     height: auto;
-    position: fixed; /* Fijo para que no interfiera con la información */
+    position: fixed;
     top: 20px;
     left: 20px;
     border-radius: 50%;
@@ -107,4 +107,27 @@ body {
 
 .score-info h2, .score-info p {
     text-align: center;
+}
+
+/* Estilos del botón de pausa */
+.pause-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pause-button {
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 10px;
+    background-color: #7289DA;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.pause-button:hover {
+    background-color: #99AAB5;
+    transform: translateY(-2px);
 }

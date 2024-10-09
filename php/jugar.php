@@ -49,12 +49,10 @@ function parseGameData($content) {
     $gameData = [];
     for ($i = 1; $i <= $numElements; $i++) {
         if (!isset($lines[$i])) {
-            // Error handling
             continue;
         }
         $parts = explode("#", $lines[$i]);
         if (count($parts) !== 3) {
-            // Error handling
             continue;
         }
         $keyCode = trim($parts[0]);
@@ -88,16 +86,6 @@ if (file_exists($gameDataFile)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jugar Canción</title>
     <link rel="stylesheet" href="../css/jugar.css">
-    <style>
-        /* Estilos para el logo */
-        .logo img {
-            width: 100px;
-            height: auto;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-    </style>
 </head>
 <body>
     <!-- Logo con enlace a index.php -->
@@ -123,6 +111,10 @@ if (file_exists($gameDataFile)) {
             </div>
             <div class="progress-bar">
                 <div id="progress" class="progress"></div>
+            </div>
+            <!-- Botón de pausa -->
+            <div class="pause-container">
+                <button id="pause-button" class="pause-button">Pausa</button>
             </div>
         </div>
 
