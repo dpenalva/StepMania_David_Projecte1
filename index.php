@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+// Si existe una cookie de nombreUsuario y no está configurada la sesión, se configura.
+if (isset($_COOKIE['nombreUsuario']) && !isset($_SESSION['nombreUsuario'])) {
+    $_SESSION['nombreUsuario'] = $_COOKIE['nombreUsuario'];
+}
+
+// Verificar si se ha iniciado sesión con nombre de usuario
+$nombreUsuario = isset($_SESSION['nombreUsuario']) ? $_SESSION['nombreUsuario'] : 'Invitado';
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,7 +17,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simulador de Baile - Menú Principal</title>
   <link rel="stylesheet" href="css/index.css">
-  <!-- Incluye la CDN de Font Awesome para los iconos -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -57,7 +68,7 @@
     </div>
 
     <div class="center-panel">
-      <h1>Bienvenido, <span id="nombreUsuario"></span></h1>
+      <h1>Bienvenido, <?php echo htmlspecialchars($nombreUsuario); ?></h1>
       <a href="index.php?play_random=true"><button class="main-button">PLAY</button></a>
       <a href="añadir.php"><button class="main-button">AÑADIR</button></a>
       <a href="como_jugar.php"><button class="main-button">CÓMO JUGAR?</button></a>
@@ -93,7 +104,6 @@
 
                     // Opciones: Jugar, Editar, Eliminar
                     echo "<div class='song-options'>";
-                    // Modificado el botón de reproducir para que inicie el juego con la canción seleccionada
                     echo "<button onclick=\"location.href='php/jugar.php?song=" . urlencode($cancion['titulo']) . "'\"><i class='fas fa-play'></i></button>"; // Jugar
                     echo "<button onclick=\"location.href='php/editar.php?song=" . urlencode($cancion['titulo']) . "'\"><i class='fas fa-edit'></i></button>"; // Editar
                     echo "<button onclick=\"eliminarCancion('" . addslashes($cancion['titulo']) . "')\"><i class='fas fa-trash-alt'></i></button>"; // Eliminar
@@ -143,22 +153,9 @@
     // Función para eliminar una canción
     function eliminarCancion(titulo) {
         if (confirm('¿Estás seguro de que quieres eliminar ' + titulo + '?')) {
-            // Codificar el título para que se maneje correctamente en la URL
             location.href = 'php/eliminar.php?titulo=' + encodeURIComponent(titulo);
         }
     }
-
-    // Cargar el nombre de usuario guardado
-    document.addEventListener("DOMContentLoaded", function() {
-        const nombreUsuario = localStorage.getItem('nombreUsuario');
-        if (nombreUsuario) {
-            document.getElementById('nombreUsuario').textContent = nombreUsuario;
-        } else {
-            document.getElementById('nombreUsuario').textContent = 'Invitado';
-        }
-    });
     </script>
-
-    <script src="js/index.js"></script>
-  </body>
+</body>
 </html>

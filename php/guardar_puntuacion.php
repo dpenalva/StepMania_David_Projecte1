@@ -1,45 +1,49 @@
 <?php
 session_start();
 
-$inputData = json_decode(file_get_contents('php://input'), true);
+// Leer los datos enviados por POST
+$data = [
+    'jugador' => $_POST['jugador'],
+    'cancion' => $_POST['cancion'],
+    'puntuacion' => $_POST['puntuacion'],
+    'fecha' => $_POST['fecha']
+];
 
-$jugador = $inputData['jugador'];
-$cancion = $inputData['cancion'];
-$puntuacion = (int)$inputData['puntuacion'];
-
-$archivoClasificacion = __DIR__ . '/clasificacion.json';
-
-// Leer el archivo de clasificación
-if (file_exists($archivoClasificacion)) {
-    $clasificacion = json_decode(file_get_contents($archivoClasificacion), true);
-} else {
-    $clasificacion = [];
+// Verificar si el nombre de usuario está en la cookie o en la sesión
+if (!isset($_SESSION['nombreUsuario']) && isset($_COOKIE['nombreUsuario'])) {
+    $_SESSION['nombreUsuario'] = $_COOKIE['nombreUsuario'];
 }
 
-// Buscar si el jugador ya tiene una puntuación para la misma canción
-$encontrado = false;
+$nombreUsuario = $_SESSION['nombreUsuario'] ?? 'Invitado';
+$data['jugador'] = $nombreUsuario; // Actualizar el nombre del jugador con el correcto
+
+// Cargar el archivo de clasificación
+$archivoClasificacion = __DIR__ . '/clasificacion.json';
+$clasificacion = file_exists($archivoClasificacion) ? json_decode(file_get_contents($archivoClasificacion), true) : [];
+
+// Verificar si el jugador ya tiene una puntuación registrada para esa canción
+$existe = false;
 foreach ($clasificacion as &$entrada) {
-    if ($entrada['jugador'] === $jugador && $entrada['cancion'] === $cancion) {
-        // Si la nueva puntuación es mayor, actualizarla
-        if ($puntuacion > $entrada['puntuacion']) {
-            $entrada['puntuacion'] = $puntuacion;
+    if ($entrada['jugador'] === $data['jugador'] && $entrada['cancion'] === $data['cancion']) {
+        // Si ya existe una entrada y la nueva puntuación es mayor, se actualiza
+        if ($data['puntuacion'] > $entrada['puntuacion']) {
+            $entrada['puntuacion'] = $data['puntuacion'];
+            $entrada['fecha'] = $data['fecha'];
         }
-        $encontrado = true;
+        $existe = true;
         break;
     }
 }
 
-// Si no se encontró una entrada previa, añadir una nueva
-if (!$encontrado) {
-    $clasificacion[] = [
-        'jugador' => $jugador,
-        'cancion' => $cancion,
-        'puntuacion' => $puntuacion
-    ];
+// Si no existe una entrada, se crea una nueva
+if (!$existe) {
+    $clasificacion[] = $data;
 }
 
-// Guardar la clasificación actualizada
+// Guardar los cambios en el archivo JSON
 file_put_contents($archivoClasificacion, json_encode($clasificacion, JSON_PRETTY_PRINT));
 
-echo json_encode(['success' => true]);
+// Redirigir de nuevo al index.php o a la página que desees
+header("Location: ../index.php");
+exit;
 ?>

@@ -1,10 +1,11 @@
 function guardarNombre() {
     const nombreUsuario = document.getElementById('username').value;
     if (nombreUsuario) {
-        localStorage.setItem('nombreUsuario', nombreUsuario);
-        return true; // Permite que el formulario se envíe
+        // Crear una cookie con el nombre del usuario
+        document.cookie = `nombreUsuario=${encodeURIComponent(nombreUsuario)}; path=/; max-age=3600`; // Expira en 1 hora
+        return true;
     } else {
         alert('Por favor, introduce tu nombre.');
-        return false; // Evita que el formulario se envíe si no hay nombre
+        return false;
     }
 }

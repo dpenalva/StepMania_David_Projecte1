@@ -8,5 +8,29 @@
         "jugador": "RyZe",
         "cancion": "a2",
         "puntuacion": 250
+    },
+    {
+        "jugador": "aa",
+        "cancion": "a2",
+        "puntuacion": 100,
+        "fecha": "10\/10\/2024, 18:36:47"
+    },
+    {
+        "jugador": "aa",
+        "cancion": "Cancion2",
+        "puntuacion": 50,
+        "fecha": "10\/10\/2024, 18:40:08"
+    },
+    {
+        "jugador": "David",
+        "cancion": "A1",
+        "puntuacion": 300,
+        "fecha": "10\/10\/2024, 18:45:55"
+    },
+    {
+        "jugador": "LOL",
+        "cancion": "A1",
+        "puntuacion": "50",
+        "fecha": "10\/10\/2024, 19:33:20"
     }
 ]
